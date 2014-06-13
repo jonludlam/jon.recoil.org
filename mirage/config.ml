@@ -1,11 +1,5 @@
 open Mirage
 
-let ipaddr = 
-   let address = Ipaddr.V4.of_string_exn "46.43.42.141" in
-   let netmask = Ipaddr.V4.of_string_exn "255.255.255.128" in
-   let gateways = [Ipaddr.V4.of_string_exn "46.43.42.129" ] in
-   { address; netmask; gateways }
-
 (* If the Unix `MODE` is set, the choice of configuration changes:
    MODE=crunch (or nothing): use static filesystem via crunch
    MODE=fat: use FAT and block device (run ./make-fat-images.sh)
@@ -40,7 +34,7 @@ let dhcp =
 let stack console =
   match net, dhcp with
   | `Direct, true  -> direct_stackv4_with_dhcp console tap0
-  | `Direct, false -> direct_stackv4_with_static_ipv4 console tap0 ipaddr
+  | `Direct, false -> direct_stackv4_with_default_ipv4 console tap0
   | `Socket, _     -> socket_stackv4 console [Ipaddr.V4.any]
 
 let server =

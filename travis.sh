@@ -9,7 +9,9 @@ opam init
 opam install mirage
 eval `opam config env`
 
-cp .travis-www.ml config.ml
+cp .travis-www.ml mirage/config.ml
+
+cd mirage
 
 mirage configure --$MIRAGE_BACKEND
 mirage build

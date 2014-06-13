@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Jon Ludlam's Blog</title>
+  <title>Tracking Down Stress Test Bugs in Xapi - Jon Ludlam's Blog</title>
   <meta name="author" content="Jon Ludlam">
 
   
@@ -20,7 +20,7 @@ xenopsd: &ldquo; &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jon.recoil.org/">
+  <link rel="canonical" href="http://jon.recoil.org//blog/2014/06/12/tracking-down-stress-test-bugs-in-xapi">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Jon Ludlam's Blog" type="application/atom+xml">
@@ -65,15 +65,12 @@ xenopsd: &ldquo; &hellip;">
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/06/12/tracking-down-stress-test-bugs-in-xapi/">Tracking Down Stress Test Bugs in Xapi</a></h1>
+      <h1 class="entry-title">Tracking Down Stress Test Bugs in Xapi</h1>
     
     
       <p class="meta">
@@ -96,7 +93,7 @@ xenopsd: &ldquo; &hellip;">
   </header>
 
 
-  <div class="entry-content"><p>We had an issue reported by XenRT that xapi was failing during a
+<div class="entry-content"><p>We had an issue reported by XenRT that xapi was failing during a
 stress test while halting a VM, reporting an internal error from
 xenopsd: &ldquo;Object does not exist in xenopsd&rdquo;.</p>
 
@@ -455,18 +452,57 @@ implementing it using the asynchronous task mechanisms.</p>
 <p>And indeed, with this queuing in place the problem doesn&rsquo;t happen even
 with our fault injection code activated.</p>
 </div>
+
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Jon Ludlam</span></span>
+
+      
+
+
+
+
+
+
+
+
   
 
 
-    </article>
+<time datetime="2014-06-12T15:59:38+01:00" pubdate data-updated="true">Jun 12<span>th</span>, 2014</time>
+      
+
+<span class="categories">
   
-  <div class="pagination">
+    <a class='category' href='/blog/categories/xapi-project/'>xapi-project</a>
+  
+</span>
+
+
+    </p>
     
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://jon.recoil.org//blog/2014/06/12/tracking-down-stress-test-bugs-in-xapi/" data-via="" data-counturl="http://jon.recoil.org//blog/2014/06/12/tracking-down-stress-test-bugs-in-xapi/" >Tweet</a>
+  
+  
+  
 </div>
+
+    
+    <p class="meta">
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
 <aside class="sidebar">
   
     <section>
@@ -486,6 +522,7 @@ with our fault injection code activated.</p>
 
   
 </aside>
+
 
     </div>
   </div>
