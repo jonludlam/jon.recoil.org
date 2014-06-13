@@ -23,7 +23,7 @@ host cl11-08, thread id 46298 from the TCP port listening to
 0.0.0.0:80. It's a task called `dispatch:VM.clean_shutdown`, which has
 task id `D:fa4c1c72df7e`, and comes from a logger named `taskhelper`,
 which is defined
-[here](https://github.com/xapi-project/xen-api/blob/master/ocaml/idl/ocaml_backend/taskHelper.ml#L14).
+[here](https://github.com/xapi-project/xen-api/blob/9abf1c73923598b3598e41e539ec49d60c51c588/ocaml/idl/ocaml_backend/taskHelper.ml#L14)
 The log message says that there's a new task 'Async.VM.clean_shutdown'
 with task id R:82f033257476, which has been forwarded from the pool
 master.
@@ -43,11 +43,11 @@ The `mscgen` line shows an internal `VM.shutdown` call from xapi to
 xenopsd.  The entry points for all of the xenopsd API calls are in the
 file xenopsd.git/lib/xenops_server.ml, and this particular call is
 handled
-[here](https://github.com/xapi-project/xenopsd/blob/master/lib/xenops_server.ml#L1718),
+[here](https://github.com/xapi-project/xenopsd/blob/25fc99435dbe5093b10f8727198a94097ba22031/lib/xenops_server.ml#L1727)
 which shows why xenopsd logs it as VM_poweroff.
 
 Xenopsd turns this API call into
-[several smaller items](https://github.com/xapi-project/xenopsd/blob/master/lib/xenops_server.ml#L809)
+[several smaller items](https://github.com/xapi-project/xenopsd/blob/25fc99435dbe5093b10f8727198a94097ba22031/lib/xenops_server.ml#L809)
 and starts processing them, logging when it starts each one:
 
 ```
@@ -252,6 +252,6 @@ index b470891..51f0b3d 100644
                 debug "VM.stat %s" x;
 ```
 
-And indeed, with this queuing in place the problem doesn't happen even
+And indeed, with [this queuing in place](https://github.com/xapi-project/xenopsd/pull/77) the problem doesn't happen even
 with our fault injection code activated.
 
