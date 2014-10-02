@@ -6,7 +6,7 @@ sudo apt-get install -qq ocaml ocaml-native-compilers camlp4-extra opam
 
 export OPAMYES=1
 opam init
-opam install mirage
+opam install mirage crunch
 eval `opam config env`
 
 cp .travis-www.ml src/config.ml
@@ -15,7 +15,7 @@ cd src
 
 mirage configure --$MIRAGE_BACKEND
 make depend
-mirage build
+make
 
 # Only deploy if the following conditions are met.
 if [ "$MIRAGE_BACKEND" = "xen" \

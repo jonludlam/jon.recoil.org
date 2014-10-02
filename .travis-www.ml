@@ -21,8 +21,12 @@ let fat_ro dir =
   kv_ro_of_fs (fat_of_files ~dir ())
 
 let fs = match mode with
-  | `Fat    -> fat_ro "../htdocs"
-  | `Crunch -> crunch "../htdocs"
+  | `Fat    -> fat_ro "../static"
+  | `Crunch -> crunch "../static"
+
+let blog_fs = match mode with
+  | `Fat    -> fat_ro "../blog"
+  | `Crunch -> crunch "../blog"
 
 let net =
   try match Sys.getenv "NET" with
@@ -47,12 +51,11 @@ let server =
   http_server 80 (stack default_console)
 
 let main =
-  foreign "Dispatch.Main" (console @-> kv_ro @-> http @-> job)
+  foreign "Dispatch.Main" (console @-> kv_ro @-> kv_ro @-> http @-> job)
 
 let () =
-  add_to_ocamlfind_libraries ["re.str"];
-  add_to_opam_packages ["re"];
-
+  add_to_ocamlfind_libraries ["re.str"; "cowabloga"; "cow.syntax"];
+  add_to_opam_packages ["re"; "cowabloga"];
   register "www" [
-    main $ default_console $ fs $ server
+    main $ default_console $ fs $ blog_fs $ server
   ]
