@@ -9,11 +9,12 @@ opam init
 opam install mirage
 eval `opam config env`
 
-cp .travis-www.ml mirage/config.ml
+cp .travis-www.ml src/config.ml
 
-cd mirage
+cd src
 
 mirage configure --$MIRAGE_BACKEND
+make depend
 mirage build
 
 # Only deploy if the following conditions are met.

@@ -1,0 +1,7 @@
+S src
+B src
+PKG findlib
+PKG cohttp
+PKG lwt
+PKG cow
+PKG cowabloga
