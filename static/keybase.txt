@@ -1,0 +1,66 @@
+==================================================================
+https://keybase.io/jonludlam
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of http://jon.recoil.org
+  * I am jonludlam (https://keybase.io/jonludlam) on keybase.
+  * I have a public key with fingerprint 7C33 65A3 0E7D 50DE D929  B60B 2AF5 C25D 379D EC5C
+
+To claim this, I am signing this object:
+
+{
+    "body": {
+        "key": {
+            "fingerprint": "7c3365a30e7d50ded929b60b2af5c25d379dec5c",
+            "host": "keybase.io",
+            "key_id": "2af5c25d379dec5c",
+            "uid": "609c2f2bf7d16edb89c6e0a630c06a00",
+            "username": "jonludlam"
+        },
+        "service": {
+            "hostname": "jon.recoil.org",
+            "protocol": "http:"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "ctime": 1398632079,
+    "expire_in": 157680000,
+    "prev": "9280c4885c8f5ce6355a86d20beb69df91cdecb1d21aacae8cb22e9d9e369130",
+    "seqno": 3,
+    "tag": "signature"
+}
+
+with the aforementioned key, yielding the PGP signature:
+
+-----BEGIN PGP MESSAGE-----
+Version: Keybase OpenPGP v0.1.12
+Comment: https://keybase.io/crypto
+
+yMHzAnicbZFtSBRbGMdnc01d8KWuX/wgxGSKssm8OLMze9MMutALQRdjUWtbZs45
+uzu1zqwzs15FfKko8F7LqxAmXNNICT+YlWUZgZsvH3ohP0SFFcEtUCNqC0xTsTwj
+RV86X4bzf37//3OeecaT4wiHbb4+tiF4KT3B9iA6FyFKvGpLLSlrsIZ015JH0drH
+r6gBpId1RTVJN+kCLMtzEkshF+QoiKDIiDJPyYzk5wDDQdYlQgQ4QDrJoGZYDhwj
+SwbKVzSs4YtPgVj9BR9ZK/CUCBg/I/tdkOYRlAUR8IiSeJYCFC9RlAUaSFelCoTp
+I5oaisCQVEHWOUksVykAy7VrvX8i+ToCmhLK1/QAtod1zdSAFsK1oGmG3ZbVrAlb
+7F9I9n1P8cmKCvHo2FCFdEPRVNJNYxKYihVLs6LAswzlEp0kqg4rOvIpFsG5eIHC
+x2qDqnCkyAgUKBAEDgh4YsSzHCcJPGQoGcm8CP0iDfAPkGnI0JIEJCQAmWGQCEXE
+8iLNWvMaqFLVSDeLnykFcKShBFTJjOiIrBuNHrITNgexPn6dtTzCkZT2Y6XXXiUS
+PZO97dn8P/R8rPn/i5lxH2fztp6v9Pw940m9bJ9c7Hj+Ptd4PF22/HnwwPjBrhv9
+6hlPRutK0kAsmX295UqJ3jW4baI4O+swRZ7b8+E+1/3bqOv3mXJy4r/r1XTO9Jub
+fModqf/ew57yvdGGp0OFbUrj2X4of7llXt2+q2E+t2nq9srsYvtwYlFTbnhT0Baa
+Xjrty05LGSwaNY63j2WUPvlzoHyO+NfrO9aZnmCvId7mtBZdOFWWnLmxO6vA+7XP
+22bvWlhwFj9qjua9eDa+f+enkyu9fyiFtqEp2NG478S3YXmkJK4+fsdLx+6GvsrN
+C2OzbSPc3RhKLX23tNzpaVkFkMgZFQ==
+=qMgv
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/jonludlam
+
+==================================================================
+
