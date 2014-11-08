@@ -49,6 +49,8 @@ module Main (C:CONSOLE) (FS:KV_RO) (FS2:KV_RO) (S:Cohttp_lwt.Server) = struct
       | ["blog"] ->
         Site.blog (fun name -> read_fs2 blogfs name >>= fun str -> Lwt.return (Cow.Markdown.of_string str)) >>= fun body -> 
         S.respond_string ~status:`OK ~body ()
+      | ["code"] ->
+        S.respond_string ~status:`OK ~body:Site.code ()
       | segments ->
         let path = String.concat "/" segments in
         try_lwt

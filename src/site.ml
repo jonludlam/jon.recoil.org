@@ -87,11 +87,11 @@ let index =
 	  <div class="medium-7 medium-left-text columns">
             <h2>Hi, I'm Jon Ludlam</h2>
             <p>I'm a fellow of <a href="http://www.chu.cam.ac.uk/">Churchill College</a> in Cambridge and I work on <a href="http://github.com/xapi-project">open source software</a> at <a href="http://www.citrix.com/">Citrix</a>.</p>
-	    <p><a href="http://www.github.com/jonludlam"><i class="fi-social-github"> </i>&nbsp;http://www.github.com/jonludlam</a></p>
-	    <p><a href="http://www.twitter.com/jonludlam"><i class="fi-social-twitter"> </i>&nbsp;http://www.twitter.com/jonludlam</a></p>
-	    <p><a href="https://uk.linkedin.com/in/jonludlam"><i class="fi-social-linkedin"> </i>&nbsp;https://uk.linkedin.com/in/jonludlam</a></p>
-	    <p><a href="https://google.com/+JonLudlam"><i class="fi-social-google-plus"> </i>&nbsp;http://google.com/+JonLudlam</a></p>
-            <p><a href="https://flickr.com/photos/jonludlam"><i class="fi-social-flickr"> </i>&nbsp;http://flickr.com/photos/jonludlam</a></p>
+	    <p><a href="http://www.github.com/jonludlam" rel="me"><i class="fi-social-github"> </i>&nbsp;http://www.github.com/jonludlam</a></p>
+	    <p><a href="http://www.twitter.com/jonludlam" rel="me"><i class="fi-social-twitter"> </i>&nbsp;http://www.twitter.com/jonludlam</a></p>
+	    <p><a href="https://uk.linkedin.com/in/jonludlam" rel="me"><i class="fi-social-linkedin"> </i>&nbsp;https://uk.linkedin.com/in/jonludlam</a></p>
+	    <p><a href="https://google.com/+JonLudlam" rel="me"><i class="fi-social-google-plus"> </i>&nbsp;http://google.com/+JonLudlam</a></p>
+            <p><a href="https://flickr.com/photos/jonludlam" rel="me"><i class="fi-social-flickr"> </i>&nbsp;http://flickr.com/photos/jonludlam</a></p>
 	  </div>
 	</div>
 	<div class="row">
