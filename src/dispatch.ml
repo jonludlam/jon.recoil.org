@@ -1,31 +1,30 @@
 open Lwt
 open Printf
-open V1_LWT
 
-module Main (C:CONSOLE) (FS:KV_RO) (FS2:KV_RO) (S:Cohttp_lwt.Server) = struct
+module Main (S:Cohttp_lwt.S.Server) (FS:Mirage_types_lwt.KV_RO) (FS2:Mirage_types_lwt.KV_RO) = struct
 
-  let start c staticfs blogfs http =
+  let start http staticfs blogfs =
 
     let read_fs fs name =
       FS.size fs name
       >>= function
-      | `Error (FS.Unknown_key _) -> fail (Failure ("read " ^ name))
-      | `Ok size ->
-        FS.read fs name 0 (Int64.to_int size)
+      | Error e -> fail (Failure ("read " ^ name))
+      | Ok size ->
+        FS.read fs name 0L size
         >>= function
-        | `Error (FS.Unknown_key _) -> fail (Failure ("read " ^ name))
-        | `Ok bufs -> return (Cstruct.copyv bufs)
+        | Error e -> fail (Failure ("read " ^ name))
+        | Ok bufs -> return (Cstruct.copyv bufs)
     in
 
     let read_fs2 fs name =
       FS2.size fs name
       >>= function
-      | `Error (FS2.Unknown_key _) -> fail (Failure ("read " ^ name))
-      | `Ok size ->
-        FS2.read fs name 0 (Int64.to_int size)
+      | Error _ -> fail (Failure ("read " ^ name))
+      | Ok size ->
+        FS2.read fs name 0L size
         >>= function
-        | `Error (FS2.Unknown_key _) -> fail (Failure ("read " ^ name))
-        | `Ok bufs -> return (Cstruct.copyv bufs)
+        | Error _ -> fail (Failure ("read " ^ name))
+        | Ok bufs -> return (Cstruct.copyv bufs)
     in
 
 
@@ -53,23 +52,23 @@ module Main (C:CONSOLE) (FS:KV_RO) (FS2:KV_RO) (S:Cohttp_lwt.Server) = struct
         S.respond_string ~status:`OK ~body:Site.code ()
       | segments ->
         let path = String.concat "/" segments in
-        try_lwt
+        Lwt.catch (fun () ->
           read_fs staticfs path
           >>= fun body ->
-          S.respond_string ~status:`OK ~body ()
-        with exn ->
-          S.respond_not_found ()
+          S.respond_string ~status:`OK ~body ())
+          (fun exn ->
+            S.respond_not_found ())
     in
 
     (* HTTP callback *)
-    let callback conn_id request body =
-      let uri = S.Request.uri request in
+    let callback (_, conn_id) request body =
+      let uri = Cohttp.Request.uri request in
       dispatcher (split_path uri)
     in
-    let conn_closed conn_id () =
+    let conn_closed (_, conn_id) =
       let cid = Cohttp.Connection.to_string conn_id in
-      C.log c (Printf.sprintf "conn %s closed" cid)
+      ()
     in
-    http { S.callback; conn_closed }
+    http (`TCP 8080) (S.make ~callback ~conn_closed ())
 
 end
