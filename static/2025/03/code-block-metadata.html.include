@@ -1,0 +1,56 @@
+<p>Back in 2021 [<span class="citation"
+data-cites="julow">[@julow]</span>] introduced some <a
+href="https://github.com/ocaml-doc/odoc-parser/pull/2">new syntax</a> to
+odoc’s code blocks to allow us to attach arbitrary metadata to the
+blocks. We imposed no structure on this; it was simply a block of text
+in between the language tag and the start of the code block. Now odoc
+needs to use it itself, we need to be a bit more precise about how it’s
+defined.</p>
+<p>The original concept looked like this:</p>
+<pre><code>{@ocaml metadata goes here in an unstructued way[
+  ... code ...
+]}</code></pre>
+<p>where everything in between the language (“ocaml” in this case) and
+the opening square bracket would be captured and put into the AST
+verbatim. Odoc itself has had no particular use for this, but it has
+been used in <a href="https://github.com/realworldocaml/mdx">mdx</a> to
+control how it handles the code blocks, for example to skip processing
+of the block, to synchronise the block with another file, to disable
+testing the block on particular OSs and so on.</p>
+<p>As part of the Odoc 3 release we decided to address one of our <a
+href="https://github.com/ocaml/odoc/pull/303">oldest open issues</a>,
+that of extracting code blocks from mli/mld files for inclusion into
+other files. This is similar to the file-sync facility in mdx but it
+works in the other direction: the canonical source is in the mld/mli
+file. In order to do this, we now need to use the metadata so we can
+select which code blocks to extract, and so we needed a more concrete
+specification of how the metadata should be parsed.</p>
+<p>We looked at what <a
+href="https://github.com/realworldocaml/mdx/blob/main/lib/label.ml#L195-L210">mdx
+does</a> but it’s a rather ad-hoc parsing, splitting the string on
+commas and so on, which is OK for mdx as it’s in charge of what things
+the user might want to put into the metadata, but for a general parsing
+library like <code>odoc.parser</code> we need to be a bit more careful.
+Daniel Bünzli <a
+href="https://github.com/ocaml/odoc/pull/1326#issuecomment-2702260053">suggested</a>
+a simple strategy of atoms and bindings inspired by s-expressions. The
+idea is that we can have something like this:</p>
+<pre><code>{@ocaml atom1 &quot;atom two&quot; key1=value1 &quot;key 2&quot;=&quot;value with spaces&quot;[
+  ... code content ...
+]}</code></pre>
+<p>Daniel suggested a very minimal escaping rule, whereby a string could
+contain a literal <code>"</code> by prefixing with a backslash -
+something like; <code>"value with a \" and spaces"</code>, but we
+discussed it during the <a
+href="https://ocaml.org/governance/platform">odoc developer meeting</a>
+and felt that we might want something a little more familiar. So we took
+a look at the lexer in <a
+href="https://github.com/janestreet/sexplib/blob/master/src/lexer.mll">sexplib</a>
+and found that it follows the <a
+href="https://github.com/janestreet/sexplib/blob/d7c5e3adc16fcf0435220c3cd44bb695775020c1/README.org#lexical-conventions-of-s-expression">lexical
+conventions of OCaml’s strings</a>, and decided that would be a
+reasonable approach for us to follow too.</p>
+<p>The resulting code, including the extraction logic, was implemented
+in <a href="https://github.com/ocaml/odoc/pull/1326/">PR 1326</a> mainly
+by [<span class="citation" data-cites="panglesd">[@panglesd]</span>]
+with a little help from me on the lexer.</p>

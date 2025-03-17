@@ -1,0 +1,120 @@
+<p>Odoc 3 has been a year-long project to improve the experience of
+writing documentation for OCaml projects, and it’s finally out of the
+door! I’m incredibly proud of the work the team has put in to make this
+release a real milestone in how we both write and consume docs.</p>
+<p>There are <a
+href="https://discuss.ocaml.org/t/ann-odoc-3-beta-release/16043">many
+new and improved features</a> that this release brings, but also a
+number of bugfixes, and I thought I’d talk about one in particular here,
+an <a href="https://github.com/ocaml/odoc/pull/1081">overhaul of “module
+type of”</a> that landed in May 2024.</p>
+<h2 id="module-type-of">Module type of</h2>
+<p><code>module type of</code> is a language feature of OCaml allowing
+one to recover the signature of an existing module. For example, if I
+had a module X:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a># <span class="kw">module</span> X = <span class="kw">struct</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">type</span> t = Foo | Bar</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">end</span>;;</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> X : <span class="kw">sig</span> <span class="kw">type</span> t = Foo | Bar <span class="kw">end</span></span></code></pre></div>
+<p>then I can get back the signature of X using
+<code>module type of</code>:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a># <span class="kw">module</span> <span class="kw">type</span> Xsig = <span class="kw">module</span> <span class="kw">type</span> <span class="kw">of</span> X</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> <span class="kw">type</span> Xsig = <span class="kw">sig</span> <span class="kw">type</span> t = Foo | Bar <span class="kw">end</span></span></code></pre></div>
+<p>which can be very useful if you’re trying to <a
+href="https://discuss.ocaml.org/t/extend-existing-module/1389">extend
+existing modules</a> amongst other things.</p>
+<p>OCaml and Odoc treat <code>module type of</code> in somewhat
+different ways. OCaml internally expands the expression immediately it
+sees it, and effectively replaces it with the signature - ie, in the
+above example <code>Xsig</code> is now a signature, not a
+<code>module type of</code> expression.</p>
+<p>In contrast, Odoc would like to keep track of the fact that this
+signature came from a <code>module type of</code> expression, as it’s
+very useful to know. If you’re extending a module, your signature might
+look like:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> <span class="kw">type</span> ListExtended = <span class="kw">sig</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">include</span> <span class="kw">module</span> <span class="kw">type</span> <span class="kw">of</span> <span class="kw">struct</span> <span class="kw">include</span> <span class="dt">List</span> <span class="kw">end</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> extra_list_function : &#39;a <span class="dt">list</span> -&gt; &#39;a <span class="dt">list</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div>
+<p>The documentation we produce will expand the contents of the
+<code>include</code> statement, but keep track of the fact that it came
+from a <code>module type of</code> expression so the reader can see
+where these signature items came from.</p>
+<h3 id="the-problem">The problem</h3>
+<p>We run into difficulties as soon as we introduce another language
+feature that operates on signatures: <code>with</code>. Let’s start with
+a module type S:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> <span class="kw">type</span> S = <span class="kw">sig</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">module</span> X : <span class="kw">sig</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">type</span> t</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">end</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">module</span> <span class="kw">type</span> Y =</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">module</span> <span class="kw">type</span> <span class="kw">of</span> <span class="kw">struct</span> <span class="kw">include</span> X <span class="kw">end</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div>
+<p>We’ll now define a new module <code>X2</code> that we intend to use
+as a replacement for <code>X</code>:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> X2 = <span class="kw">struct</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">type</span> t = <span class="dt">int</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">type</span> u = <span class="dt">float</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div>
+<p>Now we’ll define a new module type <code>T</code> which is
+<code>S</code> but with <code>T</code> replaced:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> <span class="kw">type</span> T = S <span class="kw">with</span> <span class="kw">module</span> X := X2</span></code></pre></div>
+<p>When presented with this, OCaml expands the
+<code>module type of</code> expressions and tells us the computed
+signatures:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ocamlc <span class="at">-i</span> test.ml</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> type S =</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="ex">sig</span> module X : sig type t end module type Y = sig type t = X.t end end</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> X2 : sig type t = int type u = float end</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> type T = sig module type Y = sig type t = X2.t end end</span></code></pre></div>
+<p>The interesting thing here is that in module type <code>T</code>,
+module type <code>Y</code> only has a type <code>t</code> in it, not a
+type <code>u</code>. As above, Odoc wants to keep the
+<code>module type of</code> expression so the reader can tell where
+<code>module type Y</code> came from. However, the substitution would do
+a different thing in this case - we would have the following:</p>
+<p><code>ocaml skip module type T = sig   module type Y = module type of struct include X2 end end</code></p>
+<p>and the expansion of this would then clearly have both types
+<code>t</code> and <code>u</code> in it.</p>
+<p>So now Odoc has two problems: We need to compute the correct
+signature, and we need to be able to describe <em>how</em> we computed
+it.</p>
+<p>The previous solution to this was to have a ‘phase 0’ of odoc which
+would compute the expansions of all <code>module type of</code>
+expressions before doing any other work. This was necessary because of a
+‘simplfying’ assumption in how we handled the typing environment. The
+new, simpler approach was to calculate the expansion during the normal
+flow of work, and <em>never</em> to attempt to recalculate it, but
+simply operate on the signature. This was a nice big simplification and
+optimisation that removed a few corner cases in the previous code
+(including an <a
+href="https://github.com/ocaml/odoc/blob/v2.4/src/xref2/type_of.ml#L167-L174">infinite
+loop</a> that we <em>hoped</em> always terminated…!)</p>
+<p>The second issue was how to describe it. We still want it clear that
+this signature was derived from another, but it’s clear we can’t
+honestly say that in the above example that it’s
+<code>module type of X2</code>. The answer is that we have applied a
+<em>transparent ascription</em> to the signature. Essentially, the
+signature is <code>X2</code> but constrained to only have the fields of
+X.</p>
+<p>This is not a current feature of OCaml, though Jane Street has <a
+href="https://blog.janestreet.com/plans-for-ocaml-408/">done some
+work</a> on this, including declaring the syntax:
+<code>X2 &lt;: X</code>. However, there’s another interesting wrinkle
+here. <code>X</code> is a module defined in the module type
+<code>S</code>, so it’s not possible to write a valid OCaml path that
+points to it – <code>S.X</code> has no meaning. In addition, the
+right-hand side of the <code>&lt;:</code> operator should be a module
+type, so we’d actually need to write
+<code>X2 &lt;: module type of S.X</code> . We’re still figuring out the
+right thing to do here, so for now Odoc 3 will still pretend that it’s
+simply <code>module type of X2</code>.</p>
